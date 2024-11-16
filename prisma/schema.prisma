@@ -1,0 +1,67 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  role UserRole @default(user)
+  needPasswordChange Boolean @default(true)
+  status UserStatus @default(ACTIVE)
+  gender Gender  @default(Man)
+  profile String
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  //RelationShip
+  sendMessage         Messages[] @relation("SenderMessages")
+  recieverMessage     Messages[] @relation("ReceiverMessages")
+
+  @@map("users")
+}
+
+
+
+
+
+model Messages{
+  id String @id @default(uuid())
+  type String @default("text")
+  message String
+  messageStatus String @default("sent")
+  //RelationShip
+  senderId      String
+  sender        User     @relation("SenderMessages", fields: [senderId], references: [id])
+  recieverId    String
+  reciever      User     @relation("ReceiverMessages", fields: [recieverId], references: [id])
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  @@map("messages")
+
+}
+
+
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+enum UserRole {
+  admin
+  user
+} 
+enum Gender {
+  Man
+  Woman
+}
+
