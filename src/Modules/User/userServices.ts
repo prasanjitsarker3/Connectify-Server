@@ -65,6 +65,7 @@ const getAllUserFromDB = async (
       email: true,
       role: true,
       needPasswordChange: true,
+      profile: true,
       status: true,
       createdAt: true,
     },

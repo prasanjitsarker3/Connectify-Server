@@ -15,6 +15,17 @@ const sendMessage = catchAsync(
     });
   }
 );
+const sendMessageWithImage = catchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const result = await messageService.sendMessageImage(req.body);
+    sendResponse(res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: "Message Send Successfully",
+      data: result,
+    });
+  }
+);
 
 const getMessage = catchAsync(
   async (req: Request & { user?: any }, res: Response) => {
@@ -30,10 +41,10 @@ const getMessage = catchAsync(
   }
 );
 
-const getUserForSidebar = catchAsync(
+const getInitialContactsWithMessage = catchAsync(
   async (req: Request & { user?: any }, res: Response) => {
-    const user = req.user;
-    const result = await messageService.getUsersForSidebar(user);
+    const { fromId } = req.params;
+    const result = await messageService.getInitialContactsWithMessage(fromId);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -43,4 +54,9 @@ const getUserForSidebar = catchAsync(
   }
 );
 
-export const messageController = { sendMessage, getMessage, getUserForSidebar };
+export const messageController = {
+  sendMessage,
+  getMessage,
+  sendMessageWithImage,
+  getInitialContactsWithMessage,
+};

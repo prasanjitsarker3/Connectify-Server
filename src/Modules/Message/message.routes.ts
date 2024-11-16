@@ -4,11 +4,7 @@ import auth from "../../Middleware/auth";
 import { UserRole } from "@prisma/client";
 
 const router = express.Router();
-router.get(
-  "/user-sidebar",
-  auth(UserRole.user, UserRole.admin),
-  messageController.getUserForSidebar
-);
+
 router.get(
   "/:id",
   auth(UserRole.user, UserRole.admin),
@@ -19,6 +15,16 @@ router.post(
   "/send",
   auth(UserRole.user, UserRole.admin),
   messageController.sendMessage
+);
+router.post(
+  "/sendimg",
+  auth(UserRole.user, UserRole.admin),
+  messageController.sendMessageWithImage
+);
+router.get(
+  "/contact/:fromId",
+  auth(UserRole.user, UserRole.admin),
+  messageController.getInitialContactsWithMessage
 );
 
 export const messageRoute = router;
