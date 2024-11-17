@@ -3,7 +3,6 @@ import prisma from "../../App/Common/Prisma";
 import { getUserOnline } from "../../Socket/getUserOnline";
 
 interface Contact {
-  userId: string;
   messageId: string;
   type: string;
   message: string;
@@ -11,6 +10,7 @@ interface Contact {
   createdAt: Date;
   senderId: string;
   recieverId: string;
+  id?: string; // From `sender` or `receiver`
   name?: string; // From `sender` or `receiver`
   email?: string; // From `sender` or `receiver`
   profile?: string; // From `sender` or `receiver`
@@ -167,7 +167,6 @@ const getInitialContactsWithMessage = async (from: string) => {
       } = msg;
 
       let contact: Contact = {
-        userId: id,
         messageId: id,
         type,
         message,
@@ -175,12 +174,13 @@ const getInitialContactsWithMessage = async (from: string) => {
         createdAt,
         senderId,
         recieverId,
-        totalUnreadMessage: 0, // Default value
+        totalUnreadMessage: 0,
       };
 
       if (isSender) {
         contact = {
           ...contact,
+          id: msg.reciever.id,
           name: msg.reciever.name,
           email: msg.reciever.email,
           profile: msg.reciever.profile,
@@ -188,6 +188,7 @@ const getInitialContactsWithMessage = async (from: string) => {
       } else {
         contact = {
           ...contact,
+          id: msg.sender.id,
           name: msg.sender.name,
           email: msg.sender.email,
           profile: msg.sender.profile,
@@ -215,7 +216,7 @@ const getInitialContactsWithMessage = async (from: string) => {
         },
       },
       data: {
-        messageStatus: "delivered",
+        messageStatus: "delivery",
       },
     });
   }

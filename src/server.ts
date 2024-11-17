@@ -40,7 +40,7 @@ async function main() {
         if (userId) {
           global.onlineUsers.set(userId, socket.id);
           const currentOnline = Array.from(global.onlineUsers.keys());
-          console.log("Current online users:", currentOnline);
+          // console.log("Current online users:", currentOnline);
           io.emit("onlineUsers", currentOnline);
         }
       });
@@ -51,6 +51,48 @@ async function main() {
         const recipientSocketId = global.onlineUsers.get(to);
         if (recipientSocketId) {
           socket.to(recipientSocketId).emit("msg-receive", updatedMessages);
+        }
+      });
+
+      socket.on("outgoing-voice-call", (data) => {
+        const sendUserSocket = onlineUsers.get(data.to);
+        if (sendUserSocket) {
+          socket.to(sendUserSocket).emit("incoming-voice-call", {
+            from: data.from,
+            roomId: data.roomId,
+            callType: data.callType,
+          });
+        }
+      });
+
+      socket.on("outgoing-video-call", (data) => {
+        const sendUserSocket = onlineUsers.get(data.to);
+        if (sendUserSocket) {
+          socket.to(sendUserSocket).emit("incoming-video-call", {
+            from: data.from,
+            roomId: data.roomId,
+            callType: data.callType,
+          });
+        }
+      });
+
+      socket.on("reject-voice-call", (data) => {
+        const sendUserSocket = onlineUsers.get(data.from);
+        if (sendUserSocket) {
+          socket.to(sendUserSocket).emit("voice-call-rejected");
+        }
+      });
+      socket.on("reject-video-call", (data) => {
+        const sendUserSocket = onlineUsers.get(data.from);
+        if (sendUserSocket) {
+          socket.to(sendUserSocket).emit("video-call-rejected");
+        }
+      });
+
+      socket.on("accept-incoming-call", ({ id }) => {
+        const sendUserSocket = onlineUsers.get(id);
+        if (sendUserSocket) {
+          socket.to(sendUserSocket).emit("accept-call");
         }
       });
 
