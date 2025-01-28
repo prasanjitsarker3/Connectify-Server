@@ -10,6 +10,7 @@ import { createToken } from "../../App/Common/createToken";
 import config from "../../App/config";
 import { verifyToken } from "../../Utilities/veriflyToken";
 import { ITokenUser } from "../../App/Common/authType";
+import { generateToken04 } from "../../Utilities/generateToken04";
 
 const userRegisterIntoDB = async (payload: any) => {
   const hashPassword: string = await bcrypt.hash(payload.password, 12);
@@ -145,9 +146,28 @@ const changePassword = async (user: ITokenUser, payload: IChangePassword) => {
   };
 };
 
+const generateZegoToken = async (userId: string) => {
+  const appId = parseInt(process.env.ZEGO_APP_ID);
+  const serverSecret = process.env.ZEGO_SERVER_ID;
+  console.log(serverSecret?.length);
+  const effectiveTime = 3600;
+  const payload = "";
+
+  const token = generateToken04(
+    appId,
+    userId,
+    serverSecret,
+    effectiveTime,
+    payload
+  );
+
+  return token;
+};
+
 export const authService = {
   userRegisterIntoDB,
   userLoginFromDB,
   refreshToken,
   changePassword,
+  generateZegoToken,
 };

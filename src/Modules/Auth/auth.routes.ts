@@ -7,6 +7,7 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
+router.get("/:userId", authController.zogoToken);
 router.post("/register", authController.userRegister);
 router.post(
   "/login",

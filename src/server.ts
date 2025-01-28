@@ -82,6 +82,7 @@ async function main() {
           socket.to(sendUserSocket).emit("voice-call-rejected");
         }
       });
+
       socket.on("reject-video-call", (data) => {
         const sendUserSocket = onlineUsers.get(data.from);
         if (sendUserSocket) {
@@ -92,7 +93,9 @@ async function main() {
       socket.on("accept-incoming-call", ({ id }) => {
         const sendUserSocket = onlineUsers.get(id);
         if (sendUserSocket) {
-          socket.to(sendUserSocket).emit("accept-call");
+          io.to(sendUserSocket).emit("accept-call", {
+            message: "Call Accepted",
+          });
         }
       });
 

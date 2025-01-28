@@ -56,9 +56,24 @@ const changePassword = catchAsync(
     });
   }
 );
+
+const zogoToken = catchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const { userId } = req.params;
+    console.log(userId);
+    const result = await authService.generateZegoToken(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Password Change Successfully",
+      data: result,
+    });
+  }
+);
 export const authController = {
   userRegister,
   userLogin,
   refreshToken,
   changePassword,
+  zogoToken,
 };
