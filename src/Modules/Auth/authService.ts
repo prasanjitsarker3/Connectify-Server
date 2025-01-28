@@ -147,8 +147,8 @@ const changePassword = async (user: ITokenUser, payload: IChangePassword) => {
 };
 
 const generateZegoToken = async (userId: string) => {
-  const appId = parseInt(process.env.ZEGO_APP_ID);
-  const serverSecret = process.env.ZEGO_SERVER_ID;
+  const appId = parseInt(process.env.ZEGO_APP_ID || "0");
+  const serverSecret = process.env.ZEGO_SERVER_ID as string;
   console.log(serverSecret?.length);
   const effectiveTime = 3600;
   const payload = "";
